@@ -1,0 +1,150 @@
+﻿@model IEnumerable<Prueba1.Models.Cita>
+@{
+    ViewBag.Title = "Agendar Cita";
+}
+
+<h2>Agendar Cita</h2>
+
+<form id="formAgendar" asp-controller="Citas" asp-action="GuardarCita" method="post">
+    <div class="form-group">
+        <label for="ddlPacientes">Paciente</label>
+        <select id="ddlPacientes" name="IdPaciente" class="form-control">
+            <option value="">Seleccione un paciente</option>
+            @foreach (var p in ViewBag.Pacientes as List<SelectListItem>)
+            {
+                <option value="@p.Value">@p.Text</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="ddlMedicos">Doctor</label>
+        <select id="ddlMedicos" name="IdMedico" class="form-control">
+            <option value="">Seleccione un doctor</option>
+            @foreach (var m in ViewBag.Medicos as List<SelectListItem>)
+            {
+                <option value="@m.Value">@m.Text</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="txtDiasDisponibles">Días disponibles</label>
+        <input type="text" id="txtDiasDisponibles" class="form-control" readonly />
+    </div>
+
+    <div class="form-group">
+        <label for="fecha">Fecha de la cita</label>
+        <input type="date" id="fecha" name="Fecha" class="form-control"
+               min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+    </div>
+
+    <div class="form-group">
+        <label for="ddlHoras">Hora de la cita</label>
+        <select id="ddlHoras" name="Horario" class="form-control">
+            <option value="">Seleccione una hora</option>
+        </select>
+    </div>
+
+    <br />
+    <button type="submit" class="btn btn-success">Guardar cita</button>
+</form>
+   <br />
+   <br />
+<h2>Consultar Citas</h2>
+
+<!-- Formulario de búsqueda -->
+<form asp-controller="Citas" asp-action="ConsultarCitas" method="get">
+    <div class="form-group">
+        <label for="idPaciente">Paciente</label>
+        <select id="idPaciente" name="idPaciente" class="form-control">
+            <option value="">Seleccione un paciente</option>
+            @foreach (var p in ViewBag.Pacientes as List<SelectListItem>)
+            {
+                <option value="@p.Value">@p.Text</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="fecha">Fecha</label>
+        <input type="date" id="fecha" name="fecha" class="form-control" />
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Buscar</button>
+</form>
+
+<!-- Grid de resultados -->
+@if (Model != null && Model.Any())
+{
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Paciente</th>
+                <th>Médico</th>
+                <th>Especialidad</th>
+                <th>Fecha</th>
+                <th>Horario</th>
+                <th>Estatus</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cita in Model)
+            {
+                <tr>
+                    <td>@cita.NombrePaciente</td>
+                    <td>@cita.NombreMedico</td>
+                    <td>@cita.Especialidad</td>
+                    <td>@cita.Fecha.ToString("yyyy-MM-dd")</td>
+                    <td>@cita.Horario</td>
+                    <td>@cita.EstatusDescripcion</td>
+                    <td>
+                        @if (cita.Estatus == 1)
+                        {
+                            <!-- solo si está activa -->
+                            <button class="btn btn-danger btn-sm"
+                                    onclick="abrirModalCancelar(@cita.Id)">
+                                Cancelar
+                            </button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="mt-4">No se encontraron citas para los criterios seleccionados.</p>
+}
+
+<div class="modal fade" id="modalCancelar" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <form id="formCancelar" asp-controller="Citas" asp-action="CancelarCita" method="post">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cancelar cita</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="idCitaCancelar" name="idCita" />
+                    <div class="form-group">
+                        <label for="motivo">Motivo de cancelación</label>
+                        <textarea id="motivo" name="motivo" class="form-control" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger">Confirmar cancelación</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="~/js/citas.js"></script>
+
+

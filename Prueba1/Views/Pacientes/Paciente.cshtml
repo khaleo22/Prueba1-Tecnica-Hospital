@@ -1,0 +1,104 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Gestión de Pacientes</h5>
+    </div>
+    <div class="card-body">
+        <form asp-action="Guardar" method="post">
+            <input type="hidden" id="Id" name="Id" />
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" id="Nombre" name="Nombre" class="form-control" required />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Apellido Paterno</label>
+                    <input type="text" id="APaterno" name="APaterno" class="form-control" required />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Apellido Materno</label>
+                    <input type="text" id="AMaterno" name="AMaterno" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Fecha de Nacimiento</label>
+                    <input type="date" id="FechaNacimiento" name="FechaNacimiento" class="form-control" required />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Correo Electrónico</label>
+                    <input type="email" id="CorreoElectronico" name="CorreoElectronico" class="form-control" required />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Teléfono</label>
+                    <input type="text" id="Telefono" name="Telefono" class="form-control" required />
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-success me-2">Guardar</button>
+                <button type="button" class="btn btn-secondary" id="btnCancelar">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">Listado de Pacientes</h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido Paterno</th>
+                    <th>Apellido Materno</th>
+                    <th>Fecha Nacimiento</th>
+                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model)
+                {
+                    <tr>
+                        <td>@p.Nombre</td>
+                        <td>@p.APaterno</td>
+                        <td>@p.AMaterno</td>
+                        <td>@p.FechaNacimiento.ToShortDateString()</td>
+                        <td>@p.CorreoElectronico</td>
+                        <td>@p.Telefono</td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-warning btn-sm edit-btn"
+                                    data-id="@p.Id"
+                                    data-nombre="@p.Nombre"
+                                    data-apaterno="@p.APaterno"
+                                    data-amaterno="@p.AMaterno"
+                                    data-fecha="@p.FechaNacimiento.ToString("yyyy-MM-dd")"
+                                    data-correo="@p.CorreoElectronico"
+                                    data-telefono="@p.Telefono">
+                                Editar
+                            </button>
+                            <a asp-action="Eliminar" asp-route-id="@p.Id" class="btn btn-danger btn-sm">Eliminar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/paciente.js"></script>
+}
+
+

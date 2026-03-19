@@ -1,0 +1,104 @@
+﻿@model IEnumerable<Prueba1.Models.Doctor>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml"; // o null si no quieres menú
+    ViewData["Title"] = "Gestión de Doctores";
+}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Gestión de Doctores</h5>
+    </div>
+    <div class="card-body">
+        <form asp-action="Guardar" method="post">
+            <input type="hidden" id="Id" name="Id" />
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="Nombre" class="form-label">Nombre</label>
+                    <input type="text" id="Nombre" name="Nombre" class="form-control" required />
+                </div>
+                <div class="col-md-4">
+                    <label for="APaterno" class="form-label">Apellido Paterno</label>
+                    <input type="text" id="APaterno" name="APaterno" class="form-control" required />
+                </div>
+                <div class="col-md-4">
+                    <label for="AMaterno" class="form-label">Apellido Materno</label>
+                    <input type="text" id="AMaterno" name="AMaterno" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="Cedula" class="form-label">Cédula</label>
+                    <input type="text" id="Cedula" name="Cedula" class="form-control" required />
+                </div>
+                <div class="col-md-6">
+                    <label for="IdEspecialista" class="form-label">Especialidad</label>
+                    <select id="IdEspecialista" name="IdEspecialista" class="form-select" required>
+                        <option value="">-- Selecciona una especialidad --</option>
+                        @foreach (var esp in ViewBag.Especialidades)
+                        {
+                            <option value="@esp.Id">@esp.Concepto</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-success me-2">Guardar</button>
+                <button type="button" class="btn btn-secondary" id="btnCancelar">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<hr />
+
+<div class="card shadow-sm">
+    <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">Listado de Doctores</h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido Paterno</th>
+                    <th>Apellido Materno</th>
+                    <th>Cédula</th>
+                    <th>Especialidad</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var d in Model)
+                {
+                    <tr>
+                        <td>@d.Nombre</td>
+                        <td>@d.APaterno</td>
+                        <td>@d.AMaterno</td>
+                        <td>@d.Cedula</td>
+                        <td>@d.EspecialidadConcepto</td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-warning btn-sm edit-btn"
+                                    data-id="@d.Id"
+                                    data-nombre="@d.Nombre"
+                                    data-apaterno="@d.APaterno"
+                                    data-amaterno="@d.AMaterno"
+                                    data-cedula="@d.Cedula"
+                                    data-especialidad="@d.IdEspecialista">
+                                Editar
+                            </button>
+                            <a asp-action="Eliminar" asp-route-id="@d.Id" class="btn btn-danger btn-sm">Eliminar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/Doctores.js"></script>
+}

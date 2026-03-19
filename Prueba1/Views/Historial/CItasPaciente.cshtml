@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Prueba1.Models.HistorialCita>
+
+@{
+    ViewBag.Title = "Historial de Citas";
+}
+
+<h2>Historial de Citas del Paciente</h2>
+
+<!-- Formulario de selección -->
+<form asp-controller="Historial" asp-action="CitasPaciente" method="get" class="form-inline mb-3">
+    <div class="form-group mr-2">
+        <label for="idPaciente">Paciente:</label>
+        <select id="idPaciente" name="idPaciente" class="form-control ml-2" asp-items="ViewBag.Pacientes"></select>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Buscar</button>
+</form>
+
+<!-- Listado de citas -->
+@if (Model != null && Model.Any())
+{
+    <div class="list-group">
+        @foreach (var cita in Model)
+        {
+            var colorClass = cita.Estatus == 1 && cita.Fecha >= DateTime.Now
+            ? "list-group-item list-group-item-success"  // verde
+            : "list-group-item list-group-item-danger";  // rojo
+
+            <div class="@colorClass">
+                <h5 class="mb-1">@cita.Fecha.ToString("yyyy-MM-dd") - @cita.Horario</h5>
+                <p class="mb-1"><strong>Médico:</strong> @cita.NombreMedico</p>
+                <p class="mb-1"><strong>Especialidad:</strong> @cita.Especialidad</p>
+                <small><strong>Estatus:</strong> @(cita.Estatus == 1 ? "Activa" : "Cancelada/Pasada")</small>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-info">Selecciona un paciente para ver su historial.</div>
+}

@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Prueba1.Models.Cita>
+@{
+    ViewBag.Title = "Agenda del Médico";
+}
+
+<h2>Agenda del Médico</h2>
+
+<form asp-controller="AgendaMedico" asp-action="AgendaMedicos" method="get" class="form-inline mb-3">
+    <div class="form-group mr-2">
+        <label for="idMedico">Médico:</label>
+        <select id="idMedico" name="idMedico" class="form-control ml-2" asp-items="ViewBag.Medicos"></select>
+    </div>
+    <div class="form-group mr-2">
+        <label for="fecha">Fecha:</label>
+        <input type="date" id="fecha" name="fecha" class="form-control ml-2" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Buscar</button>
+</form>
+
+@if (Model != null && Model.Any())
+{
+    <div class="list-group">
+        @foreach (var cita in Model)
+        {
+            <div class="list-group-item">
+                <h5 class="mb-1">@cita.Horario</h5>
+                <p class="mb-1"><strong>Paciente:</strong> @cita.NombrePaciente</p>
+                <p class="mb-1"><strong>Especialidad:</strong> @cita.Especialidad</p>
+                <small><strong>Estatus:</strong> @(cita.Estatus == 1 ? "Activa" : "Cancelada")</small>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-info">No hay citas para este médico en la fecha seleccionada.</div>
+}
